@@ -1,5 +1,5 @@
 <h1>Forked by:@janandreiiii</h1>
-<p1>Fixed some websited don't load</p1>
+<p1>Fixed some websites don't load</p1>
 
 # ![image](https://github.com/Sam0230/No-Fingerprint/blob/main/No%20Fingerprint%20small.svg)No Fingerprint
 Block browser fingerprinting attempts.
