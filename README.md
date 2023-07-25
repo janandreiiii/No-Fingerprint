@@ -16,7 +16,7 @@ It adds random noise to render results and stop websites from reading data like 
 ## How to use
 This script can be installed either as a userscript or as a browser extension / add-on.
 
-Simply install a userscript manager, such as Tampermonkey, Greasemonkey, open https://greasyfork.org/en/scripts/421262-no-fingerprint, and install this script.
+Simply install a userscript manager, such as Tampermonkey, Greasemonkey, open https://greasyfork.org/en/scripts/471642-no-fingerprint-forked-by-janandreiiii, and install this script.
 
 For Google Chrome users, you can enable Developer Mode and install this script as an unpacked browser extension.
 
