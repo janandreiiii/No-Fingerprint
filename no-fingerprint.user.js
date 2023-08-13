@@ -8,7 +8,7 @@
     // @run-at       document-start
     // @noframes     false
     // @license      The Unlicense
-    // @namespace    https://github.com/Sam0230, https://github.com/janandreiiii
+    // @namespace    https://github.com/Sam0230
     // ==/UserScript==
 
     let script = document.createElement("script");
