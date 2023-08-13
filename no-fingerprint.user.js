@@ -1,6 +1,6 @@
-  // ==UserScript==
+// ==UserScript==
     // @name         No Fingerprint (Forked by: janandreiiii)
-    // @version      0.3
+    // @version      0.4
     // @description  Block browser fingerprinting attempts. *Fixed some websites don't load.
     // @author       Sam0230, Forked by: @janandreiiii
     // @match        *://*/*
@@ -8,9 +8,9 @@
     // @run-at       document-start
     // @noframes     false
     // @license      The Unlicense
-    // @namespace    https://github.com/Sam0230
+    // @namespace    https://github.com/Sam0230, https://github.com/janandreiiii
     // ==/UserScript==
-     
+
     let script = document.createElement("script");
     script.textContent = "(" + (function() {
     	"use strict";
@@ -66,13 +66,19 @@
     	(function () { // navigator
     		let a;
     		let fakeNavigator = {};
-    	//	fakeNavigator.appCodeName						=
-    	//	fakeNavigator.appName							=
-    	//	fakeNavigator.appVersion						=
+    		fakeNavigator.appCodeName 	=
+          a = "";
+    		fakeNavigator.appName							=
+          a = "";
+    		fakeNavigator.appVersion						=
+          a = "";
     	//	fakeNavigator.platform							=
     		fakeNavigator.product							=
+          a = "";
     		fakeNavigator.productSub						=
-    	//	fakeNavigator.userAgent							=
+          a = "";
+    		fakeNavigator.userAgent							=
+          a = "";
     		fakeNavigator.vendor							=
     		fakeNavigator.vendorSub							=
     		a = "";
@@ -86,10 +92,13 @@
     	//	fakeNavigator.cookieEnabled						=
     		fakeNavigator.credentials						=
     		fakeNavigator.doNotTrack						=
+          a = "false";
     		fakeNavigator.geolocation						=
     		fakeNavigator.keyboard							=
     		fakeNavigator.language							=
+          a = "en_US";
     		fakeNavigator.languages							=
+          a = "en_US";
     		fakeNavigator.locks								=
     		fakeNavigator.mediaCapabilities					=
     		fakeNavigator.mediaDevices						=
