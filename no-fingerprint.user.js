@@ -77,8 +77,7 @@
           a = "";
     		fakeNavigator.productSub						=
           a = "";
-    		fakeNavigator.userAgent							=
-          a = "";
+    	//	fakeNavigator.userAgent							=
     		fakeNavigator.vendor							=
     		fakeNavigator.vendorSub							=
     		a = "";
@@ -96,9 +95,9 @@
     		fakeNavigator.geolocation						=
     		fakeNavigator.keyboard							=
     		fakeNavigator.language							=
-          a = "en_US";
+          a = "en-US";
     		fakeNavigator.languages							=
-          a = "en_US";
+          a = "en-US";
     		fakeNavigator.locks								=
     		fakeNavigator.mediaCapabilities					=
     		fakeNavigator.mediaDevices						=
