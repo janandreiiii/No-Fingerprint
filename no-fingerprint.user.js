@@ -1,6 +1,6 @@
 // ==UserScript==
     // @name         No Fingerprint (Forked by: janandreiiii)
-    // @version      0.4
+    // @version      1.0
     // @description  Block browser fingerprinting attempts. *Fixed some websites don't load.
     // @author       Sam0230, Forked by: @janandreiiii
     // @match        *://*/*
@@ -63,82 +63,96 @@
     		window.Date.prototype.toString					=	function () { return ""; }							;
     		window.Date.prototype.toTimeString				=	function () { return ""; }							;
     	})();
-    	(function () { // navigator
-    		let a;
-    		let fakeNavigator = {};
-    		fakeNavigator.appCodeName 	=
-          a = "";
-    		fakeNavigator.appName							=
-          a = "";
-    		fakeNavigator.appVersion						=
-          a = "";
-    	//	fakeNavigator.platform							=
-    		fakeNavigator.product							=
-          a = "";
-    		fakeNavigator.productSub						=
-          a = "";
-    	//	fakeNavigator.userAgent							=
-    		fakeNavigator.vendor							=
-    		fakeNavigator.vendorSub							=
-    		a = "";
-    		fakeNavigator.deviceMemory						=
-    		fakeNavigator.hardwareConcurrency				=
-    		fakeNavigator.maxTouchPoints					=
-    		a = 0;
-    		fakeNavigator.bluetooth							=
-    		fakeNavigator.clipboard							=
-    		fakeNavigator.connection						=
-    	//	fakeNavigator.cookieEnabled						=
-    		fakeNavigator.credentials						=
-    		fakeNavigator.doNotTrack						=
-          a = "false";
-    		fakeNavigator.geolocation						=
-    		fakeNavigator.keyboard							=
-    		fakeNavigator.language							=
-          a = "en-US";
-    		fakeNavigator.languages							=
-          a = "en-US";
-    		fakeNavigator.locks								=
-    		fakeNavigator.mediaCapabilities					=
-    		fakeNavigator.mediaDevices						=
-    		fakeNavigator.mediaSession						=
-    	//	fakeNavigator.mimeTypes							=
-    		fakeNavigator.onLine							=
-    		fakeNavigator.permissions						=
-    		fakeNavigator.presentation						=
-    		fakeNavigator.scheduling						=
-    		fakeNavigator.serviceWorker						=
-    	//	fakeNavigator.storage							=
-    		fakeNavigator.usb								=
-    		fakeNavigator.userActivation					=
-    		fakeNavigator.userAgentData						=
-    		fakeNavigator.wakeLock							=
-    		fakeNavigator.webkitPersistentStorage			=
-    		fakeNavigator.webkitTemporaryStorage			=
-    		fakeNavigator.xr								=
-    		a = {};
-    		fakeNavigator.hardwareConcurrency				= 4;
-    		fakeNavigator.deviceMemory						= "undefined";
-    	//	fakeNavigator.platform 							= "Win32";
-    		fakeNavigator.plugins							= [];
-    		setValue(fakeNavigator.plugins, "item",			function item() { return null; },		false);
-    		setValue(fakeNavigator.plugins, "namedItem",	function namedItem() { return null; },	false);
-    		setValue(fakeNavigator.plugins, "refresh",		function refresh() { return null; },	false);
-    		for (let i in window.navigator) {
-    			if (fakeNavigator[i] !== undefined) {
-    				try {
-    					Object.defineProperty(window.navigator, i, {
-    						get: function () {
-    							if (fakeNavigator[i] === "undefined") {
-    								return undefined;
-    							}
-    							return fakeNavigator[i];
-    						}
-    					});
-    				} catch (e) {}
-    			}
-    		}
-    	})();
+    	(function () {
+    let fakeNavigator = {
+        appCodeName: "",
+        appName: "",
+        appVersion: "",
+        product: "",
+        productSub: "",
+        vendor: "",
+        vendorSub: "",
+        deviceMemory: 0,
+        hardwareConcurrency: 4,
+        maxTouchPoints: 0,
+        bluetooth: undefined,
+        clipboard: undefined,
+        connection: undefined,
+        credentials: undefined,
+        doNotTrack: "false",
+        geolocation: undefined,
+        keyboard: undefined,
+        language: "en-US",
+        languages: "en-US",
+        locks: undefined,
+        mediaCapabilities: undefined,
+        mediaDevices: undefined,
+        mediaSession: undefined,
+        onLine: undefined,
+        permissions: undefined,
+        presentation: undefined,
+        scheduling: undefined,
+        serviceWorker: undefined,
+        usb: undefined,
+        userActivation: undefined,
+        userAgentData: undefined,
+        wakeLock: undefined,
+        webkitPersistentStorage: undefined,
+        webkitTemporaryStorage: undefined,
+        xr: undefined,
+    };
+
+    // Define getters for the properties in window.navigator
+    for (let prop in window.navigator) {
+        if (fakeNavigator[prop] !== undefined) {
+            try {
+                Object.defineProperty(window.navigator, prop, {
+                    get: function () {
+                        if (fakeNavigator[prop] === "undefined") {
+                            return undefined;
+                        }
+                        return fakeNavigator[prop];
+                    },
+                });
+            } catch (e) {}
+        }
+    }
+})();
+
+//Randomized Plugins
+    (function () {
+    function generateRandomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randomIndex);
+        }
+        return result;
+    }
+
+    const numPlugins = Math.floor(Math.random() * 5) + 1;
+
+    const customPlugins = [];
+
+    // Generate random plugins
+    for (let i = 0; i < numPlugins; i++) {
+        const pluginName = generateRandomString(10);
+        const pluginDescription = generateRandomString(20);
+        customPlugins.push({
+            name: pluginName,
+            description: pluginDescription,
+        });
+    }
+
+    // Override navigator.plugins with the custom plugins
+    Object.defineProperty(navigator, 'plugins', {
+        get: function () {
+            return customPlugins;
+        },
+    });
+})();
+
     	(function () { // Screen size
     		let screenSize = [1920, 1080];
     		screen.availWidth && setValue(screen, "availWidth", screenSize[0]);
@@ -310,7 +324,7 @@
     				if (a1 === this.ALIASED_POINT_SIZE_RANGE				) { return random.float([0, 10, 11, 12, 13]);														}
     				if (a1 === 37446										) { return random.item(["Graphics", "HD Graphics", "Intel(R) HD Graphics"]);						}
     				if (a1 === this.VERSION									) { return random.item(["WebGL 1.0", "WebGL 1.0 (OpenGL)", "WebGL 1.0 (OpenGL Chromium)"]);			}
-    				if (a1 === this.SHADING_LANGUAGE_VERSION				) { return random.item(["WebGL", "WebGL GLSL", "WebGL GLSL ES", "WebGL GLSL ES (OpenGL Chromium"]);	}					
+    				if (a1 === this.SHADING_LANGUAGE_VERSION				) { return random.item(["WebGL", "WebGL GLSL", "WebGL GLSL ES", "WebGL GLSL ES (OpenGL Chromium"]);	}
     				return origGetParameter.apply(this, arguments);
     			};
     			target.getParameter.toString = origGetParameter.toString.bind(origGetParameter);
@@ -335,7 +349,7 @@
     		HTMLCanvasElement.prototype.toBlob.toString = origToBlob.toString.bind(origToBlob);
     	})();
     	(function () { // Intl
-    	
+
     	})();
     	(function () { // Fonts
     		let offsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
