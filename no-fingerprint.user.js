@@ -1,421 +1,325 @@
 // ==UserScript==
-    // @name         No Fingerprint (Forked by: janandreiiii)
-    // @version      1.0
-    // @description  Block browser fingerprinting attempts. *Fixed some websites don't load.
-    // @author       Sam0230, Forked by: @janandreiiii
-    // @match        *://*/*
-    // @grant        none
-    // @run-at       document-start
-    // @noframes     false
-    // @license      The Unlicense
-    // @namespace    https://github.com/Sam0230
-    // ==/UserScript==
+// @name         Leave No Trace
+// @version      2.0
+// @description  Hide browser fingerprint. Derived from "No Fingerprint"
+// @author       janandreiiii
+// @match        *://*/*
+// @grant        none
+// @run-at       document-start
+// @noframes     false
+// @license      The Unlicense
+// @namespace    https://github.com/Sam0230
+// ==/UserScript==
 
-    let script = document.createElement("script");
-    script.textContent = "(" + (function() {
-    	"use strict";
-    	let debug = function (topOnly) {
-    		if (!topOnly || window === window.top) {
-    			// debugger;
-    		}
-    	};
-    	(function () {
-    		document.documentElement.dataset.fbscriptallow = true;
-    	})();
-    	let randomChange = function (n, m) {
-    		if (!m) {
-    			m = 0.1;
-    		}
-    		return Math.round(n + ((Math.random() - 0.5) * 2 * n * 0.3));
-    	};
-    	let setValue = function (object, propertyName, value, writable) {
-    		if (!writable) {
-    			writable = false;
-    		}
-    		Object.defineProperty(object, propertyName, {
-    			value: value,
-    			writable: writable,
-    			enumerable: true
-    		});
-    	};
-    	(function () { // Date
-    		window.Date.prototype.getDate					=	window.Date.prototype.getUTCDate					;
-    		window.Date.prototype.getDay					=	window.Date.prototype.getUTCDay						;
-    		window.Date.prototype.getFullYear				=	window.Date.prototype.getUTCFullYear				;
-    		window.Date.prototype.getHours					=	window.Date.prototype.getUTCHours					;
-    		window.Date.prototype.getMilliseconds			=	window.Date.prototype.getUTCMilliseconds			;
-    		window.Date.prototype.getMinutes				=	window.Date.prototype.getUTCMinutes					;
-    		window.Date.prototype.getMonth					=	window.Date.prototype.getUTCMonth					;
-    		window.Date.prototype.getSeconds				=	window.Date.prototype.getUTCSeconds					;
-    		window.Date.prototype.getTimezoneOffset			=	function () { return 0; }							;
-    		window.Date.prototype.getYear					=	function () { return this.getFullYear - 1900; }		;
-    		window.Date.prototype.setDate					=	window.Date.prototype.setUTCDate					;
-    		window.Date.prototype.setFullYear				=	window.Date.prototype.setUTCFullYear				;
-    		window.Date.prototype.setHours					=	window.Date.prototype.setUTCHours					;
-    		window.Date.prototype.setMilliseconds			=	window.Date.prototype.setUTCMilliseconds			;
-    		window.Date.prototype.setMinutes				=	window.Date.prototype.setUTCMinutes					;
-    		window.Date.prototype.setMonth					=	window.Date.prototype.setUTCMonth					;
-    		window.Date.prototype.setSeconds				=	window.Date.prototype.setUTCSeconds					;
-    		window.Date.prototype.setYear					=	function (n) { return this.setFullYear(n + 1900); }	;
-    		window.Date.prototype.toLocaleDateString		=	function () { return ""; }							;
-    		window.Date.prototype.toLocaleString			=	function () { return ""; }							;
-    		window.Date.prototype.toLocaleTimeString		=	function () { return ""; }							;
-    		window.Date.prototype.toString					=	function () { return ""; }							;
-    		window.Date.prototype.toTimeString				=	function () { return ""; }							;
-    	})();
-    	(function () {
-    let fakeNavigator = {
-        appCodeName: "",
-        appName: "",
-        appVersion: "",
-        product: "",
-        productSub: "",
-        vendor: "",
-        vendorSub: "",
-        deviceMemory: 0,
-        hardwareConcurrency: 4,
-        maxTouchPoints: 0,
-        bluetooth: undefined,
-        clipboard: undefined,
-        connection: undefined,
-        credentials: undefined,
-        doNotTrack: "false",
-        geolocation: undefined,
-        keyboard: undefined,
-        language: "en-US",
-        languages: "en-US",
-        locks: undefined,
-        mediaCapabilities: undefined,
-        mediaDevices: undefined,
-        mediaSession: undefined,
-        onLine: undefined,
-        permissions: undefined,
-        presentation: undefined,
-        scheduling: undefined,
-        serviceWorker: undefined,
-        usb: undefined,
-        userActivation: undefined,
-        userAgentData: undefined,
-        wakeLock: undefined,
-        webkitPersistentStorage: undefined,
-        webkitTemporaryStorage: undefined,
-        xr: undefined,
+let script = document.createElement("script");
+script.textContent = "(" + (function() {
+    "use strict";
+
+    let debug = function(topOnly) {
+        if (!topOnly || window === window.top) {
+            // debugger;
+        }
     };
 
-    // Define getters for the properties in window.navigator
-    for (let prop in window.navigator) {
-        if (fakeNavigator[prop] !== undefined) {
-            try {
-                Object.defineProperty(window.navigator, prop, {
-                    get: function () {
-                        if (fakeNavigator[prop] === "undefined") {
-                            return undefined;
-                        }
-                        return fakeNavigator[prop];
-                    },
-                });
-            } catch (e) {}
+    (function() {
+        document.documentElement.dataset.fbscriptallow = true;
+    })();
+
+    let randomChange = function(n, m) {
+        if (!m) {
+            m = 0.1;
         }
-    }
-})();
+        return Math.round(n + ((Math.random() - 0.5) * 2 * n * 0.3));
+    };
 
-//Randomized Plugins
-    (function () {
-    function generateRandomString(length) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            result += characters.charAt(randomIndex);
+    let setValue = function(object, propertyName, value, writable) {
+        if (!writable) {
+            writable = false;
         }
-        return result;
-    }
-
-    const numPlugins = Math.floor(Math.random() * 5) + 1;
-
-    const customPlugins = [];
-
-    // Generate random plugins
-    for (let i = 0; i < numPlugins; i++) {
-        const pluginName = generateRandomString(10);
-        const pluginDescription = generateRandomString(20);
-        customPlugins.push({
-            name: pluginName,
-            description: pluginDescription,
+        Object.defineProperty(object, propertyName, {
+            value: value,
+            writable: writable,
+            enumerable: true
         });
-    }
+    };
 
-    // Override navigator.plugins with the custom plugins
-    Object.defineProperty(navigator, 'plugins', {
-        get: function () {
-            return customPlugins;
-        },
-    });
+    (function() { // Date
+        window.Date.prototype.getDate = window.Date.prototype.getUTCDate;
+        window.Date.prototype.getDay = window.Date.prototype.getUTCDay;
+        window.Date.prototype.getFullYear = window.Date.prototype.getUTCFullYear;
+        window.Date.prototype.getHours = window.Date.prototype.getUTCHours;
+        window.Date.prototype.getMilliseconds = window.Date.prototype.getUTCMilliseconds;
+        window.Date.prototype.getMinutes = window.Date.prototype.getUTCMinutes;
+        window.Date.prototype.getMonth = window.Date.prototype.getUTCMonth;
+        window.Date.prototype.getSeconds = window.Date.prototype.getUTCSeconds;
+        window.Date.prototype.getTimezoneOffset = function() { return 0; };
+        window.Date.prototype.getYear = function() { return this.getFullYear() - 1900; };
+        window.Date.prototype.setDate = window.Date.prototype.setUTCDate;
+        window.Date.prototype.setFullYear = window.Date.prototype.setUTCFullYear;
+        window.Date.prototype.setHours = window.Date.prototype.setUTCHours;
+        window.Date.prototype.setMilliseconds = window.Date.prototype.setUTCMilliseconds;
+        window.Date.prototype.setMinutes = window.Date.prototype.setUTCMinutes;
+        window.Date.prototype.setMonth = window.Date.prototype.setUTCMonth;
+        window.Date.prototype.setSeconds = window.Date.prototype.setUTCSeconds;
+        window.Date.prototype.setYear = function(n) { return this.setFullYear(n + 1900); };
+        window.Date.prototype.toLocaleDateString = function() { return ""; };
+        window.Date.prototype.toLocaleString = function() { return ""; };
+        window.Date.prototype.toLocaleTimeString = function() { return ""; };
+        window.Date.prototype.toString = function() { return ""; };
+        window.Date.prototype.toTimeString = function() { return ""; };
+    })();
+
+    (function() {
+        let fakeNavigator = {
+            appCodeName: "",
+            appName: "",
+            appVersion: "",
+            product: "Gecko",
+            productSub: "20030107",
+            vendor: "Google Inc.",
+            vendorSub: "",
+            deviceMemory: Math.floor((Math.random() * 8) + 1),
+            hardwareConcurrency: Math.floor((Math.random() * 8) + 1),
+            maxTouchPoints: 0,
+            bluetooth: undefined,
+            clipboard: undefined,
+            connection: undefined,
+            credentials: undefined,
+            doNotTrack: "false",
+            geolocation: undefined,
+            keyboard: undefined,
+            language: "en-US",
+            languages: "en-US",
+            locks: undefined,
+            mediaCapabilities: undefined,
+            mediaDevices: undefined,
+            mediaSession: undefined,
+            onLine: undefined,
+            permissions: undefined,
+            presentation: undefined,
+            scheduling: undefined,
+            serviceWorker: undefined,
+            usb: undefined,
+            userActivation: undefined,
+            userAgentData: undefined,
+            wakeLock: undefined,
+            webkitPersistentStorage: undefined,
+            webkitTemporaryStorage: undefined,
+            xr: undefined,
+            getBattery: "",
+            platform: "Win32",
+        };
+
+        // Define getters for the properties in window.navigator
+        for (let prop in window.navigator) {
+            if (fakeNavigator[prop] !== undefined) {
+                try {
+                    Object.defineProperty(window.navigator, prop, {
+                        get: function() {
+                            if (fakeNavigator[prop] === "undefined") {
+                                return undefined;
+                            }
+                            return fakeNavigator[prop];
+                        },
+                    });
+                } catch (e) {}
+            }
+        }
+    })();
+
+    // Randomized Plugins
+    (function() {
+        function generateRandomString(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                result += characters.charAt(randomIndex);
+            }
+            return result;
+        }
+
+        const numPlugins = Math.floor(Math.random() * 5) + 1;
+        const customPlugins = [];
+
+        // Generate random plugins
+        for (let i = 0; i < numPlugins; i++) {
+            const pluginName = generateRandomString(10);
+            const pluginDescription = generateRandomString(20);
+            customPlugins.push({
+                name: pluginName,
+                description: pluginDescription,
+            });
+        }
+
+        // Override navigator.plugins with the custom plugins
+        Object.defineProperty(navigator, 'plugins', {
+            get: function() {
+                return customPlugins;
+            },
+        });
+    })();
+
+    (function() { // Screen size
+        let screenSize = [1920, 1080];
+        screen.availWidth && setValue(screen, "availWidth", screenSize[0]);
+        screen.availHeight && setValue(screen, "availHeight", screenSize[1] - 40);
+        screen.availLeft && setValue(screen, "availLeft", undefined, true);
+        screen.availTop && setValue(screen, "availTop", undefined, true);
+        screen.width && setValue(screen, "width", screenSize[0]);
+        screen.height && setValue(screen, "height", screenSize[1]);
+        screen.Brightness && setValue(screen, "Brightness", randomChange(screen.Brightness));
+        screen.mozBrightness && setValue(screen, "mozBrightness", randomChange(screen.mozBrightness));
+        screen.left && setValue(screen, "left", undefined, true);
+        screen.top && setValue(screen, "top", undefined, true);
+        screen.enabled && setValue(screen, "enabled", undefined);
+        screen.mozEnabled && setValue(screen, "mozEnabled", undefined);
+        screen.pixelDepth && setValue(screen, "pixelDepth", 32);
+        screen.colorDepth && setValue(screen, "colorDepth", 32);
+    })();
+
+    (function() { // Debugger panel size
+        let n = Math.round(71.5 + (Math.random() * 15)), wChanged = false, wValue, hChanged = false, hValue;
+        Object.defineProperty(window, "outerWidth", {
+            get: function() {
+                if (!wChanged) {
+                    return window.innerWidth;
+                }
+                return wValue;
+            },
+            set: function(value) {
+                wChanged = true;
+                wValue = value;
+            }
+        });
+        Object.defineProperty(window, "outerHeight", {
+            get: function() {
+                if (!hChanged) {
+                    return window.innerHeight + n;
+                }
+                return hValue;
+            },
+            set: function(value) {
+                hChanged = true;
+                hValue = value;
+            }
+        });
+    })();
+
+    (function() { // AudioContext
+        let origGetFloatFrequencyData = window.AnalyserNode.prototype.getFloatFrequencyData;
+        window.AnalyserNode.prototype.getFloatFrequencyData = function getFloatFrequencyData(array) {
+            let ret = origGetFloatFrequencyData.apply(this, arguments);
+            for (let i = 0; i < array.length; i++) {
+                array[i] = array[i] + Math.random() * 0.2;
+            }
+            return ret;
+        };
+        window.AnalyserNode.prototype.getFloatFrequencyData.toString = origGetFloatFrequencyData.toString.bind(origGetFloatFrequencyData);
+
+        let origGetChannelData = window.AudioBuffer.prototype.getChannelData;
+        window.AudioBuffer.prototype.getChannelData = function getChannelData() {
+            let ret = origGetChannelData.apply(this, arguments);
+            for (let i = 0; i < ret.length; i++) {
+                ret[i] = ret[i] + Math.random() * 0.0001;
+            }
+            return ret;
+        };
+        window.AudioBuffer.prototype.getChannelData.toString = origGetChannelData.toString.bind(origGetChannelData);
+    })();
+
+   (function() { // Canvas
+    // Save original methods
+    let origGetContext = HTMLCanvasElement.prototype.getContext;
+    let origGetImageData = CanvasRenderingContext2D.prototype.getImageData;
+    let origToDataURL = HTMLCanvasElement.prototype.toDataURL;
+
+    // Function to randomize image data
+    let randomizeImageData = function(imageData) {
+        let data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            // Modify pixel data to include random variations
+            data[i] = (data[i] + Math.random() * 10) % 256;       // Red
+            data[i + 1] = (data[i + 1] + Math.random() * 10) % 256; // Green
+            data[i + 2] = (data[i + 2] + Math.random() * 10) % 256; // Blue
+            // Alpha remains the same
+        }
+    };
+
+    // Override the getImageData method to randomize image data
+    CanvasRenderingContext2D.prototype.getImageData = function() {
+        let imageData = origGetImageData.apply(this, arguments);
+        randomizeImageData(imageData);
+        return imageData;
+    };
+
+    // Function to randomize canvas data URL
+    let randomizeDataURL = function(dataURL) {
+        // Append random query string to data URL to prevent caching
+        return dataURL + '?random=' + Math.random();
+    };
+
+    // Override the toDataURL method to randomize data URL
+    HTMLCanvasElement.prototype.toDataURL = function() {
+        let dataURL = origToDataURL.apply(this, arguments);
+        return randomizeDataURL(dataURL);
+    };
+
+    // Override getContext to ensure modifications are applied
+    HTMLCanvasElement.prototype.getContext = function() {
+        let context = origGetContext.apply(this, arguments);
+        if (arguments[0] === '2d' && typeof context.getImageData === 'function') {
+            context.getImageData = CanvasRenderingContext2D.prototype.getImageData;
+        }
+        return context;
+    };
 })();
 
-    	(function () { // Screen size
-    		let screenSize = [1920, 1080];
-    		screen.availWidth && setValue(screen, "availWidth", screenSize[0]);
-    		screen.availHeight && setValue(screen, "availHeight", screenSize[1] - 40);
-    		screen.availLeft && setValue(screen, "availLeft", undefined, true);
-    		screen.availTop && setValue(screen, "availTop", undefined, true);
-    		screen.width && setValue(screen, "width", screenSize[0]);
-    		screen.height && setValue(screen, "height", screenSize[1]);
-    		screen.Brightness && setValue(screen, "Brightness", randomChange(screen.Brightness));
-    		screen.mozBrightness && setValue(screen, "mozBrightness", randomChange(screen.mozBrightness));
-    		screen.left && setValue(screen, "left", undefined, true);
-    		screen.top && setValue(screen, "top", undefined, true);
-    		screen.enabled && setValue(screen, "enabled", undefined);
-    		screen.mozEnabled && setValue(screen, "mozEnabled", undefined);
-    		screen.pixelDepth && setValue(screen, "pixelDepth", 32);
-    		screen.colorDepth && setValue(screen, "colorDepth", 32);
-    	})();
-    	(function () { // Debugger panel size
-    		let n = Math.round(71.5 + (Math.random() * 15)), wChanged = false, wValue, hChanged = false, hValue;
-    		Object.defineProperty(window, "outerWidth", {
-    			get: function () {
-    				if (!wChanged) {
-    					return window.innerWidth;
-    				}
-    				return wValue;
-    			},
-    			set: function (value) {
-    				wChanged = true;
-    				wValue = value;
-    			}
-    		});
-    		Object.defineProperty(window, "outerHeight", {
-    			get: function () {
-    				if (!hChanged) {
-    					return window.innerHeight + n;
-    				}
-    				return hValue;
-    			},
-    			set: function (value) {
-    				hChanged = true;
-    				hValue = value;
-    			}
-    		});
-    	})();
-    	(function () { // AudioContext
-    		let origGetFloatFrequencyData = window.AnalyserNode.prototype.getFloatFrequencyData;
-    		window.AnalyserNode.prototype.getFloatFrequencyData = function getFloatFrequencyData(array) {
-    			let ret = origGetFloatFrequencyData.apply(this, arguments);
-    			for (let i = 0; i < array.length; i++) {
-    				array[i] = array[i] + Math.random() * 0.2;
-    			}
-    			return ret;
-    		};
-    		window.AnalyserNode.prototype.getFloatFrequencyData.toString = origGetFloatFrequencyData.toString.bind(origGetFloatFrequencyData);
-    		let origGetChannelData = window.AudioBuffer.prototype.getChannelData;
-    		window.AudioBuffer.prototype.getChannelData = function getChannelData() {
-    			let ret = origGetChannelData.apply(this, arguments);
-    			for (let i = 0; i < ret.length; i++) {
-    				ret[i] = ret[i] + Math.random() * 0.0001;
-    			}
-    			return ret;
-    		};
-    		window.AudioBuffer.prototype.getChannelData.toString = origGetChannelData.toString.bind(origGetChannelData);
-    	})();
-    	(function () { // Canvas
-    		let origGetContext		= HTMLCanvasElement.prototype.getContext;
-    		let origGetImageData	= CanvasRenderingContext2D.prototype.getImageData;
-    		let origReadPixels1		= WebGLRenderingContext.prototype.readPixels;
-    		let origReadPixels2		= WebGL2RenderingContext.prototype.readPixels;
-    		let origToDataURL		= HTMLCanvasElement.prototype.toDataURL;
-    		let origToBlob			= HTMLCanvasElement.prototype.toBlob;
-    		let getImageData = function getImageData() {
-    			let imageData = origGetImageData.apply(this, arguments);
-    			for (let i = 0; i < imageData.data.length; i++) {
-    				imageData.data[i] += Math.round((Math.random() - 0.5) * 4.9);
-    			}
-    			return imageData;
-    		};
-    		CanvasRenderingContext2D.prototype.getImageData = getImageData;
-    		CanvasRenderingContext2D.prototype.getImageData.toString = origGetImageData.toString.bind(origGetImageData);
-    		let origIsPointInPath = CanvasRenderingContext2D.prototype.isPointInPath;
-    		CanvasRenderingContext2D.prototype.isPointInPath = function isPointInPath() {
-    			return false;
-    		};
-    		CanvasRenderingContext2D.prototype.isPointInPath.toString = origIsPointInPath.toString.bind(origIsPointInPath);
-    		let readPixels1 = function readPixels() {
-    			origReadPixels1.apply(this, arguments);
-    			let pixels = arguments[6];
-    			for (let i = 0; i < pixels.length; i++) {
-    				pixels[i] += Math.round((Math.random() - 0.5) * 4.9);
-    			}
-    		};
-    		WebGLRenderingContext.prototype.readPixels = readPixels1;
-    		WebGLRenderingContext.prototype.readPixels.toString = origReadPixels1.toString.bind(origReadPixels1);
-    		let readPixels2 = function readPixels() {
-    			origReadPixels2.apply(this, arguments);
-    			let pixels = arguments[6];
-    			for (let i = 0; i < pixels.length; i++) {
-    				pixels[i] += Math.round((Math.random() - 0.5) * 4.9);
-    			}
-    		};
-    		WebGL2RenderingContext.prototype.readPixels = readPixels2;
-    		WebGL2RenderingContext.prototype.readPixels.toString = origReadPixels2.toString.bind(origReadPixels2);
-    		let toDataURL = function toDataURL() {
-    			let context = origGetContext.apply(this, ["2d"]);
-    			let imageData = origGetImageData.apply(context, [0, 0, this.height, this.width]), origImageData = origGetImageData.apply(context, [0, 0, this.height, this.width]), ret;
-    			for (let i = 0; i < imageData.data.length; i++) {
-    				imageData.data[i] += Math.round((Math.random() - 0.5) * 4.9);
-    			}
-    			context.putImageData(imageData, 0, 0);
-    			ret = origToDataURL.apply(this, arguments);
-    			context.putImageData(origImageData, 0, 0);
-    			return ret;
-    		};
-    		let hookWebGLGetParameter = function (target) {
-    			let random = {
-    				"item": function (e) {
-    					let rand = e.length * Math.random();
-    					return e[Math.floor(rand)];
-    				},
-    				"number": function (power) {
-    					let tmp = [];
-    					for (let i = 0; i < power.length; i++) {
-    						tmp.push(Math.pow(2, power[i]));
-    					}
-    					return random.item(tmp);
-    				},
-    				"int": function (power) {
-    					let tmp = [];
-    					for (let i = 0; i < power.length; i++) {
-    						let n = Math.pow(2, power[i]);
-    						tmp.push(new Int32Array([n, n]));
-    					}
-    					return random.item(tmp);
-    				},
-    				"float": function (power) {
-    					let tmp = [];
-    					for (let i = 0; i < power.length; i++) {
-    						let n = Math.pow(2, power[i]);
-    						tmp.push(new Float32Array([1, n]));
-    					}
-    					return random.item(tmp);
-    				}
-    			};
-    			let origGetParameter = target.getParameter;
-    			target.getParameter = function (a1) {
-    				if (a1 === this.STENCIL_BITS							) { return 0;																						}
-    				if (a1 === this.DEPTH_BITS								) { return 24;																						}
-    				if (a1 === this.MAX_VARYING_VECTORS						) { return 30;																						}
-    				if (a1 === this.VENDOR									) { return "WebKit";																				}
-    				if (a1 === 37445										) { return "Google Inc.";																			}
-    				if (a1 === this.RENDERER								) { return "WebKit WebGL";																			}
-    				if (a1 === this.MAX_TEXTURE_SIZE						) { return random.number([14, 15]);																	}
-    				if (a1 === this.MAX_VERTEX_UNIFORM_VECTORS				) { return random.number([12, 13]);																	}
-    				if (a1 === this.MAX_CUBE_MAP_TEXTURE_SIZE				) { return random.number([14, 15]);																	}
-    				if (a1 === this.MAX_RENDERBUFFER_SIZE					) { return random.number([14, 15]);																	}
-    				if (a1 === this.MAX_VIEWPORT_DIMS						) { return random.int([13, 14, 15]);																}
-    				if (a1 === this.ALPHA_BITS								) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.BLUE_BITS								) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.GREEN_BITS								) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.RED_BITS								) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === 34047										) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.MAX_TEXTURE_IMAGE_UNITS					) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.MAX_VERTEX_ATTRIBS						) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.MAX_VERTEX_TEXTURE_IMAGE_UNITS			) { return random.number([1, 2, 3, 4]);																}
-    				if (a1 === this.MAX_COMBINED_TEXTURE_IMAGE_UNITS		) { return random.number([4, 5, 6, 7, 8]);															}
-    				if (a1 === this.MAX_FRAGMENT_UNIFORM_VECTORS			) { return random.number([10, 11, 12, 13]);															}
-    				if (a1 === this.ALIASED_LINE_WIDTH_RANGE				) { return random.float([0, 10, 11, 12, 13]);														}
-    				if (a1 === this.ALIASED_POINT_SIZE_RANGE				) { return random.float([0, 10, 11, 12, 13]);														}
-    				if (a1 === 37446										) { return random.item(["Graphics", "HD Graphics", "Intel(R) HD Graphics"]);						}
-    				if (a1 === this.VERSION									) { return random.item(["WebGL 1.0", "WebGL 1.0 (OpenGL)", "WebGL 1.0 (OpenGL Chromium)"]);			}
-    				if (a1 === this.SHADING_LANGUAGE_VERSION				) { return random.item(["WebGL", "WebGL GLSL", "WebGL GLSL ES", "WebGL GLSL ES (OpenGL Chromium"]);	}
-    				return origGetParameter.apply(this, arguments);
-    			};
-    			target.getParameter.toString = origGetParameter.toString.bind(origGetParameter);
-    		};
-    		hookWebGLGetParameter(WebGLRenderingContext.prototype);
-    		hookWebGLGetParameter(WebGL2RenderingContext.prototype);
-    		HTMLCanvasElement.prototype.toDataURL = toDataURL;
-    		HTMLCanvasElement.prototype.toDataURL.toString = origToDataURL.toString.bind(origToDataURL);
-    		let toBlob = function toBlob(callback, type, encoderOptions) {
-    			let context = origGetContext.apply(this, ["2d"]);
-    			let imageData = origGetImageData.apply(context, [0, 0, this.height, this.width]), imageDataOrig = origGetImageData.apply(context, [0, 0, this.height, this.width]);
-    			for (let i = 0; i < imageData.data.length; i++) {
-    				imageData.data[i] += Math.round((Math.random() - 0.5) * 4.9);
-    			}
-    			context.putImageData(imageData, 0, 0);
-    			return origToBlob.apply(this, [function (blob) {
-    				context.putImageData(imageDataOrig, 0, 0);
-    				callback(blob);
-    			}, type, encoderOptions]);
-    		};
-    		HTMLCanvasElement.prototype.toBlob = toBlob;
-    		HTMLCanvasElement.prototype.toBlob.toString = origToBlob.toString.bind(origToBlob);
-    	})();
-    	(function () { // Intl
+   // Randomize WebGL Rendering Context attributes
+    const originalGetExtension = WebGLRenderingContext.prototype.getExtension;
+    WebGLRenderingContext.prototype.getExtension = function(name) {
+        if (name === 'WEBGL_debug_renderer_info') {
+            return null;
+        }
+        return originalGetExtension.call(this, name);
+    };
 
-    	})();
-    	(function () { // Fonts
-    		let offsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
-    		let origOffsetWidthGetter = offsetWidth.get;
-    		offsetWidth.get = function offsetWidth() {
-    			let ret = origOffsetWidthGetter.apply(this, arguments);
-    			if (ret != 0) {
-    				if (Math.random() >= 0.9) {
-    					ret += Math.floor((Math.random() >= 0.5 ? -1 : 1) * Math.random() + Math.random());
-    				}
-    			}
-    			return ret;
-    		};
-    		offsetWidth.get.toString = origOffsetWidthGetter.toString.bind(origOffsetWidthGetter);
-    		Object.defineProperty(HTMLElement.prototype, "offsetWidth", offsetWidth);
-    		let offsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetHeight");
-    		let origOffsetHeightGetter = offsetHeight.get;
-    		offsetHeight.get = function offsetHeight() {
-    			let ret = origOffsetWidthGetter.apply(this, arguments);
-    			if (ret != 0) {
-    				if (Math.random() >= 0.9) {
-    					ret += Math.floor((Math.random() >= 0.5 ? -1 : 1) * Math.random() + Math.random());
-    				}
-    			}
-    			return ret;
-    		};
-    		offsetHeight.get.toString = origOffsetHeightGetter.toString.bind(origOffsetHeightGetter);
-    		Object.defineProperty(HTMLElement.prototype, "offsetHeight", offsetHeight);
-    	})();
-    	let debuggerHook = function (n, m) {
-    		try {
-    			let orig = window[n].prototype[m];
-    			let hook = function () {
-    				debug();
-    				try {
-    					return orig.apply(this, arguments);
-    				} catch (e) {}
-    			};
-    			Object.defineProperty(hook, "name", { value: orig.name, writable: false, enumerable: false, configurable: true });
-    			window[n].prototype[m] = hook;
-    			window[n].prototype[m].toString = orig.toString.bind(orig);
-    		} catch (e) {}
-    	};
-    	let debuggerHookAll = function (n) {
-    		try {
-    			for (let i in window[n].prototype) {
-    				try {
-    					if (window[n].prototype[i] instanceof Function) {
-    						debuggerHook(n, i);
-    					}
-    				} catch (e) {}
-    			}
-    		} catch (e) {}
-    	};
-    	debug(1);
-    	try {
-    		debuggerHookAll("AudioContext");
-    		debuggerHookAll("BaseAudioContext");
-    		debuggerHookAll("OfflineAudioCompletionEvent");
-    		debuggerHookAll("OfflineAudioContext");
-    		debuggerHookAll("AudioBuffer");
-    		debuggerHookAll("AnalyserNode");
-    		debuggerHookAll("HTMLCanvasElement");
-    		debuggerHookAll("CanvasRenderingContext2D");
-    		debuggerHookAll("WebGLRenderingContext");
-    		debuggerHookAll("WebGL2RenderingContext");
-    	} catch (e) {}
-    }) + ")()";
-    document.documentElement.prepend(script);
+    const originalGetSupportedExtensions = WebGLRenderingContext.prototype.getSupportedExtensions;
+    WebGLRenderingContext.prototype.getSupportedExtensions = function() {
+        return (originalGetSupportedExtensions.call(this) || []).filter(ext => ext !== 'WEBGL_debug_renderer_info');
+    };
+
+    // Local storage noise
+    (function() {
+        let originalSetItem = localStorage.setItem;
+        let originalGetItem = localStorage.getItem;
+
+        localStorage.setItem = function(key, value) {
+            let noise = (Math.random() * 0.0001).toString();
+            originalSetItem.call(this, key, value + noise);
+        };
+
+        localStorage.getItem = function(key) {
+            let value = originalGetItem.call(this, key);
+            if (value) {
+                return value.replace(/0\.\d+$/, "");
+            }
+            return value;
+        };
+    })();
+
+    // WebGL noise
+    (function() {
+        let originalGetParameter = WebGLRenderingContext.prototype.getParameter;
+
+        WebGLRenderingContext.prototype.getParameter = function(parameter) {
+            let value = originalGetParameter.call(this, parameter);
+            if (typeof value === "number") {
+                return value + Math.random() * 0.01;
+            }
+            return value;
+        };
+    })();
+}).toString() + ")();";
+
+document.documentElement.appendChild(script);
